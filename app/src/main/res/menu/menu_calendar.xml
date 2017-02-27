@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_viewholiday"
+        android:orderInCategory="100"
+        android:title="@string/action_viewholiday"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_changeacc"
+        android:orderInCategory="100"
+        android:title="Thoát tài khoản"
+        app:showAsAction="never" />
+</menu>

@@ -1,0 +1,154 @@
+package com.mta.calendarapi.activity;
+
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.DateTime;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
+import com.mta.calendarapi.R;
+import com.mta.calendarapi.adapter.EventAdapter;
+import com.mta.calendarapi.model.StaticValues;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class AllHoliday extends AppCompatActivity {
+    ProgressDialog mProgress;
+    EventAdapter adapter;
+    ListView lst,lst2;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_all_holiday);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        String accName = getIntent().getStringExtra(StaticValues.SHAREPREFERENCE);
+        getSupportActionBar().setTitle("All Holiday");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        lst = (ListView) findViewById(R.id.lst_allholiday);
+        mProgress = new ProgressDialog(this);
+        GoogleAccountCredential mCredential = GoogleAccountCredential.usingOAuth2(
+                getApplicationContext(), Arrays.asList(CalendarScopes.CALENDAR_READONLY))
+                .setBackOff(new ExponentialBackOff());
+        mCredential.setSelectedAccountName(accName);
+        new MakeRequestTask(mCredential,null).execute();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private class MakeRequestTask extends AsyncTask<String, Void, List<Event>> {
+        private com.google.api.services.calendar.Calendar mService = null;
+        private Exception mLastError = null;
+        HttpTransport transport = AndroidHttp.newCompatibleTransport();
+        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+        GoogleAccountCredential credential = null;
+        CalendarDay date = null;
+
+        MakeRequestTask(GoogleAccountCredential credential, CalendarDay date) {
+            this.credential = credential;
+            this.date = date;
+            mService = new com.google.api.services.calendar.Calendar.Builder(
+                    transport, jsonFactory, credential)
+                    .setApplicationName("Google Calendar API Android Quickstart")
+                    .build();
+        }
+
+        /**
+         * Background task to call Google Calendar API.
+         * @param params no parameters needed for this task.
+         */
+        @Override
+        protected List<Event> doInBackground(String... params) {
+            try {
+                return getEventsFromApi(params);
+            } catch (Exception e) {
+                mLastError = e;
+                cancel(true);
+                return null;
+            }
+        }
+
+        /*
+        * Fetch holiday VN
+        * */
+
+
+        /**
+         * Fetch a list of the next 10 events from the primary calendar.
+         * @return List of Strings describing returned events.
+         * @throws IOException
+         * @param params
+         */
+        private List<Event> getEventsFromApi(String[] params) throws IOException {
+            Calendar service = new Calendar.Builder(transport, jsonFactory, credential)
+                    .setApplicationName("applicationName").build();
+            String pageTokenEvent = null;
+            Events events;
+            do {
+                DateTime timeMin = new DateTime("2017-01-01");
+                DateTime timeMax = new DateTime("2017-12-31");
+                events = service.events().list("en.vietnamese#holiday@group.v.calendar.google.com").setPageToken(pageTokenEvent).execute();
+                List<Event> items = events.getItems();
+                /*for (Event event : items) {
+                    Log.d("eventSumm",items.size()+event.getSummary()+"\n"+event.getStart().getDate().toStringRfc3339()+"\n"+event.getEnd().getDate().toStringRfc3339());
+
+                }*/
+                for (int i = 0; i< items.size(); i++){
+                    Log.d("numberevnt", String.valueOf(items.size()));
+                    Event event = items.get(i);
+                    Log.d("eventSumm",event.toString());
+                }
+                pageTokenEvent = events.getNextPageToken();
+            } while (pageTokenEvent != null);
+            return events.getItems();
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            //mOutputText.setText("");
+            mProgress.show();
+        }
+
+        @Override
+        protected void onPostExecute(List<Event> output) {
+            mProgress.hide();
+            if (output == null || output.size() == 0) {
+                Toast.makeText(AllHoliday.this, "Don't have any event", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.d("output", String.valueOf(output.size()));
+                Toast.makeText(AllHoliday.this, "You have total "+output.size()+" event", Toast.LENGTH_SHORT).show();
+                adapter = new EventAdapter(AllHoliday.this, (ArrayList<Event>) output);
+                lst.setAdapter(adapter);
+            }
+        }
+    }
+
+}

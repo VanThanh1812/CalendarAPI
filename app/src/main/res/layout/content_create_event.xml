@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_create_event"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.mta.calendarapi.activity.CreateEventActivity"
+    tools:showIn="@layout/activity_create_event">
+
+
+    <TextView
+        android:text="Nội dung sự kiện"
+        android:textSize="16dp"
+        android:padding="6dp"
+        android:textColor="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Nội dung "
+        android:ems="10"
+        android:padding="12dp"
+        android:id="@+id/edt_sumary" />
+
+    <TextView
+        android:text="Vị trí sự kiện"
+        android:textColor="@color/colorAccent"
+        android:textSize="16dp"
+        android:padding="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Vị trí"
+        android:ems="10"
+        android:padding="12dp"
+        android:soundEffectsEnabled="true"
+        android:id="@+id/edt_location" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="Cả ngày"
+            android:textColor="@color/colorAccent"
+            android:textSize="16dp"
+            android:padding="12dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_all"
+            android:layout_alignEnd="@+id/input_layout_password"
+            android:layout_alignRight="@+id/input_layout_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_allday"
+        android:textSize="16dp"
+        android:padding="12dp"
+        android:visibility="gone"
+        android:onClick="selectDate"
+        android:textColor="#000"
+        android:background="#BBDEFB"
+        android:text="2017-02-01"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/ln_setTime"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="16dp"
+            android:padding="12dp"
+            android:textColor="@color/colorAccent"
+            android:text="Chọn thời gian (click dưới)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="From"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="2017-02-01"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:onClick="selectDate"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_fromdate"
+                android:layout_weight="3" />
+
+            <TextView
+                android:text="09:15"
+                android:onClick="selectTime"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_fromtime"
+                android:layout_weight="2" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="To"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="2017-02-01"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:onClick="selectDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_todate"
+                android:layout_weight="3" />
+
+            <TextView
+                android:text="21:15"
+                android:onClick="selectTime"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_totime"
+                android:layout_weight="2" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:text="Tạo sự kiện"
+        android:textColor="#fff"
+        android:padding="10dp"
+        android:id="@+id/btn_create"
+        android:layout_marginTop="10dp"
+        android:background="#1976D2"
+        android:layout_height="40dp" />
+
+</LinearLayout>
